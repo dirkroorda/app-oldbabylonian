@@ -3,7 +3,7 @@ import os
 from tf.core.helpers import htmlEsc, mdEsc
 from tf.applib.helpers import dh
 from tf.applib.display import prettyPre, getFeatures
-from tf.applib.highlight import hlRep
+from tf.applib.highlight import hlText, hlRep
 from tf.applib.api import setupApi
 from tf.applib.links import outLink
 from atf import Atf
@@ -11,20 +11,46 @@ from atf import Atf
 TEMP_DIR = '_temp'
 REPORT_DIR = 'reports'
 
-COMMENT_FEATURES = '''
-  comment
-  remarks
-'''.strip().split()
-
 ATF_TYPES = set('''
     sign
     cluster
 '''.strip().split())
 
+COMMENT_FEATURES = '''
+  comment
+  remarks
+'''.strip().split()
+
+CONTENT_FEATURES = '''
+  repeat
+  fraction
+  operator
+  grapheme
+'''.strip().split()
+
+FLAG_FEATURES = '''
+    collated
+    remarkable
+    question
+    damage
+'''.strip().split()
+
+CLUSTER_FEATURES = '''
+    det
+    uncertain
+    missing
+    excised
+    supplied
+    langalt
+'''.strip().split()
+
+SIGN_FEATURES = FLAG_FEATURES + CLUSTER_FEATURES + COMMENT_FEATURES + CONTENT_FEATURES
 
 URL_FORMAT = (
     'https://cdli.ucla.edu/search/search_results.php?SearchMode=Text&ObjectID={}'
 )
+
+SECTION = {'document', 'face', 'line'}
 
 
 class TfApp(Atf):
@@ -41,26 +67,27 @@ class TfApp(Atf):
 
   def webLink(app, n, text=None, className=None, _asString=False, _noUrl=False):
     api = app.api
-    L = api.L
-    F = api.F
-    if type(n) is str:
-      pNum = n
-    else:
-      refNode = n if F.otype.v(n) == 'document' else L.u(n, otype='document')[0]
-      pNum = F.catalogId.v(refNode)
+    T = api.T
 
-    title = None if _noUrl else ('to CDLI main page for this document')
-    linkText = pNum if text is None else text
-    url = '#' if _noUrl else URL_FORMAT.format(pNum)
+    (pNum, face, lnno) = T.sectionFromNode(n, fillup=True)
+    passageText = app.sectionStrFromNode(n)
+    href = '#' if _noUrl else URL_FORMAT.format(pNum)
+    if text is None:
+      text = passageText
+      title = 'show this document on CDLI'
+    else:
+      title = passageText
+    if _noUrl:
+      title = None
     target = '' if _noUrl else None
 
     result = outLink(
-        linkText,
-        url,
+        text,
+        href,
         title=title,
         className=className,
         target=target,
-        passage=pNum,
+        passage=passageText,
     )
     if _asString:
       return result
@@ -81,6 +108,7 @@ class TfApp(Atf):
     _asApp = app._asApp
     api = app.api
     F = api.F
+    L = api.L
 
     nType = F.otype.v(n)
     result = passage
@@ -89,37 +117,31 @@ class TfApp(Atf):
     else:
       nodeRep = f' *{n}* ' if d.withNodes else ''
 
+    isText = d.fmt is None or '-orig-' in d.fmt
     if nType == 'sign':
-      rep = F.atf.v(n)
-      rep = hlRep(app, rep, n, d.highlights)
-      if isLinked:
-        rep = app.webLink(n, text=rep, _asString=True)
-      result = f'{rep}{nodeRep}'
-    else:
-      lineNumbersCondition = d.lineNumbers
+      rep = hlText(app, [n], d.highlights, fmt=d.fmt)
+    elif nType in SECTION:
       if nType == 'line':
-        src = F.srcLn.v(n) or ''
-        rep = (
-            src
-            if src else (
-                mdEsc(htmlEsc(f'{nType} {F.ln.v(n)}'))
-                if secLabel else
-                ''
-            )
-        )
-        lineNumbersCondition = d.lineNumbers
+        rep = hlText(app, L.d(n, otype='sign'), d.highlights, fmt=d.fmt)
       elif nType == 'face':
-        rep = mdEsc(htmlEsc(f'{nType} {F.face.v(n)}'))
+        rep = mdEsc(htmlEsc(f'{nType} {F.face.v(n)}')) if secLabel else ''
       elif nType == 'document':
         rep = mdEsc(htmlEsc(f'{nType} {F.pnumber.v(n)}')) if secLabel else ''
       rep = hlRep(app, rep, n, d.highlights)
-      result = app._addLink(
-          n,
-          rep,
-          nodeRep,
-          isLinked=isLinked,
-          lineNumbers=lineNumbersCondition,
-      )
+      isText = False
+    else:
+      rep = hlText(app, L.d(n, otype='sign'), d.highlights, fmt=d.fmt)
+    lineNumbersCondition = d.lineNumbers
+    tClass = display.formatClass[d.fmt].lower() if isText else 'trb'
+    rep = f'<span class="{tClass}">{rep}</span>'
+    rep = app._addLink(
+        n,
+        rep,
+        nodeRep,
+        isLinked=isLinked,
+        lineNumbers=lineNumbersCondition,
+    )
+    result += rep
 
     if _asString or _asApp:
       return result
@@ -170,7 +192,7 @@ class TfApp(Atf):
     api = app.api
     F = api.F
     L = api.L
-    sortNodes = api.sortNodes
+    T = api.T
     otypeRank = api.otypeRank
 
     bigType = False
@@ -181,12 +203,6 @@ class TfApp(Atf):
 
     heading = ''
     featurePart = ''
-    commentsPart = app._getComments(
-        n,
-        firstSlot,
-        lastSlot,
-        **options,
-    )
     children = ()
 
     if bigType:
@@ -196,12 +212,14 @@ class TfApp(Atf):
     elif nType == 'face':
       children = L.d(n, otype='line')
     elif nType == 'line':
-      children = sortNodes(set(L.d(n, otype='sign')))
+      children = L.d(n, otype='word')
+    elif nType == 'word':
+      children = L.d(n, otype='sign')
     elif nType == 'cluster':
-      children = sortNodes(set(L.d(n, otype='sign')))
+      children = L.d(n, otype='sign')
 
     if nType == 'document':
-      heading = htmlEsc(F.catalogId.v(n))
+      heading = htmlEsc(F.pnumber.v(n))
       heading += ' '
       heading += getFeatures(
           app,
@@ -219,9 +237,11 @@ class TfApp(Atf):
           **options,
       )
     elif nType == 'line':
-      heading = htmlEsc(app._getLineNum(n))
+      heading = htmlEsc(F.lnno.v(n))
       className = 'line'
-      theseFeats = ('srcLnNum', ) if d.lineNumbers else ()
+      theseFeats = ('comment', 'remarks', 'translation@en')
+      if d.lineNumbers:
+        theseFeats = ('srcLnNum',) + theseFeats
       featurePart = getFeatures(
           app,
           n,
@@ -230,8 +250,29 @@ class TfApp(Atf):
       )
     elif nType == 'cluster':
       heading = F.type.v(n)
+      featurePart = getFeatures(
+          app,
+          n,
+          (),
+          **options,
+      )
+    elif nType == 'word':
+      heading = T.text(n, fmt=d.fmt, descend=True)
+      featurePart = getFeatures(
+          app,
+          n,
+          (),
+          **options,
+      )
     elif nType == slotType:
-      featurePart = F.atf.v(n) + getFeatures(app, n, (), **options)
+      heading = T.text(n, fmt=d.fmt)
+      featurePart = getFeatures(
+          app,
+          n,
+          SIGN_FEATURES,
+          withName=True,
+          **options,
+      )
       if not outer and F.type.v(n) == 'empty':
         return
 
@@ -240,35 +281,24 @@ class TfApp(Atf):
     else:
       typePart = heading
 
-    isCluster = nType == 'cluster'
-    extra = 'b' if isCluster else ''
     label = f'''
-    <div class="lbl {className}{extra}">
+    <div class="lbl {className}">
         {typePart}
         {nodePart}
     </div>
 ''' if typePart or nodePart else ''
 
-    if isCluster:
-      if outer:
-        html.append(f'<div class="contnr {className} {hlClass}" {hlStyle}>')
-      html.append(label)
-      if outer:
-        html.append(f'<div class="children {className}">')
-    else:
-      html.append(
-          f'''
+    html.append(
+        f'''
 <div class="contnr {className} {hlClass}" {hlStyle}>
     {label}
     <div class="meta">
         {featurePart}
-        {commentsPart}
     </div>
 '''
-      )
-    if not isCluster:
-      if children:
-        html.append(f'''
+    )
+    if children:
+      html.append(f'''
     <div class="children {className}">
 ''')
 
@@ -281,53 +311,10 @@ class TfApp(Atf):
           lastSlot,
           **options,
       )
-    if isCluster:
-      html.append(
-          f'''
-    <div class="lbl {className}e {hlClass}" {hlStyle}>
-        {typePart}
-        {nodePart}
-    </div>
-'''
-      )
-      if outer:
-        html.append('</div></div>')
-    else:
-      if children:
-        html.append('''
+    if children:
+      html.append('''
     </div>
 ''')
-      html.append('''
+    html.append('''
 </div>
 ''')
-
-  def _getLineNum(app, n):
-    api = app.api
-    F = api.F
-    col = F.col.v(n) or ''
-    primeCol = "'" if F.primecol.v(n) else ''
-    colNum = f'{col}{primeCol}'
-
-    ln = F.ln.v(n) or ''
-    primeLn = "'" if F.primeln.v(n) else ''
-    lnNum = f'{ln}{primeLn}'
-
-    sep = ':' if colNum and lnNum else ''
-    return f'{colNum}{sep}{lnNum}'
-
-  def _getComments(
-      app,
-      n,
-      firstSlot,
-      lastSlot,
-      **options,
-  ):
-    api = app.api
-    Fs = api.Fs
-    comments = []
-    for kind in COMMENT_FEATURES:
-      cmt = Fs(kind).v(n)
-      if cmt:
-        cmt = cmt.replace('\n', '<br/>')
-        comments.append(f'<div class="{kind}">{cmt}</div>')
-    return ''.join(comments)

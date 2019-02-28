@@ -14,11 +14,11 @@ OPTIONS = (
 ORG = 'Nino-cunei'
 REPO = 'oldbabylonian'
 CORPUS = 'Old Babylonian Letters 1900-1600: Cuneiform tablets '
-VERSION = '0.2'
+VERSION = '0.3'
 RELATIVE = f'tf'
 
-DOI_TEXT = '10.xxx/zenodo.xxxxxxx'
-DOI_URL = 'https://doi.org/10.5281/zenodo.xxxxxxx'
+DOI_TEXT = '10.5281/zenodo.2579207'
+DOI_URL = 'https://doi.org/10.5281/zenodo.2579207'
 
 DOC_URL = f'https://github.com/{ORG}/{REPO}/blob/master/docs/'
 DOC_INTRO = 'about.md'
@@ -45,6 +45,7 @@ EXAMPLE_SECTION = '<code>P509373</code>'
 EXAMPLE_SECTION_TEXT = 'P509373'
 
 SECTION_SEP1 = ' '
+SECTION_SEP2 = ':'
 
 DEFAULT_CLS = ''
 DEFAULT_CLS_ORIG = ''
