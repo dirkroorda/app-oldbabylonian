@@ -1,4 +1,4 @@
-![logo](tutorial/images/ninologo.png)
+![logo](code/static/logo.png)
 
 # Old Babylonian Letters
 
@@ -20,3 +20,5 @@ This app also contains interfaces to deal with links to
 See also
 [about](https://github.com/Nino-cunei/oldbabylonian/blob/master/docs/about.md),
 [transcription](https://github.com/Nino-cunei/oldbabylonian/blob/master/docs/transcription.md).
+
+![shot](images/shot.png)
