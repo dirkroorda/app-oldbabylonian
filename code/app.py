@@ -11,6 +11,13 @@ from atf import Atf
 TEMP_DIR = '_temp'
 REPORT_DIR = 'reports'
 
+DOCUMENT = 'document'
+FACE = 'face'
+LINE = 'line'
+CLUSTER = 'cluster'
+WORD = 'word'
+SIGN = 'sign'
+
 ATF_TYPES = set('''
     sign
     cluster
@@ -50,7 +57,7 @@ URL_FORMAT = (
     'https://cdli.ucla.edu/search/search_results.php?SearchMode=Text&ObjectID={}'
 )
 
-SECTION = {'document', 'face', 'line'}
+SECTION = {DOCUMENT, FACE, LINE}
 
 
 class TfApp(Atf):
@@ -74,7 +81,7 @@ class TfApp(Atf):
     href = '#' if _noUrl else URL_FORMAT.format(pNum)
     if text is None:
       text = passageText
-      title = 'show this document on CDLI'
+      title = f'show this {DOCUMENT} on CDLI'
     else:
       title = passageText
     if _noUrl:
@@ -118,19 +125,19 @@ class TfApp(Atf):
       nodeRep = f' *{n}* ' if d.withNodes else ''
 
     isText = d.fmt is None or '-orig-' in d.fmt
-    if nType == 'sign':
+    if nType == SIGN:
       rep = hlText(app, [n], d.highlights, fmt=d.fmt)
     elif nType in SECTION:
-      if nType == 'line':
-        rep = hlText(app, L.d(n, otype='sign'), d.highlights, fmt=d.fmt)
-      elif nType == 'face':
+      if nType == LINE:
+        rep = hlText(app, L.d(n, otype=SIGN), d.highlights, fmt=d.fmt)
+      elif nType == FACE:
         rep = mdEsc(htmlEsc(f'{nType} {F.face.v(n)}')) if secLabel else ''
-      elif nType == 'document':
+      elif nType == DOCUMENT:
         rep = mdEsc(htmlEsc(f'{nType} {F.pnumber.v(n)}')) if secLabel else ''
       rep = hlRep(app, rep, n, d.highlights)
       isText = False
     else:
-      rep = hlText(app, L.d(n, otype='sign'), d.highlights, fmt=d.fmt)
+      rep = hlText(app, L.d(n, otype=SIGN), d.highlights, fmt=d.fmt)
     lineNumbersCondition = d.lineNumbers
     tClass = display.formatClass[d.fmt].lower() if isText else 'trb'
     rep = f'<span class="{tClass}">{rep}</span>'
@@ -138,7 +145,7 @@ class TfApp(Atf):
         n,
         rep,
         nodeRep,
-        isLinked=isLinked,
+        isLinked=isLinked and nType != LINE,
         lineNumbers=lineNumbersCondition,
     )
     result += rep
@@ -147,7 +154,7 @@ class TfApp(Atf):
       return result
     dh(result)
 
-  def _addLink(app, n, rep, nodeRep, isLinked=True, lineNumbers=True):
+  def _addLink(app, n, rep, nodeRep, isLinked=None, lineNumbers=True):
     F = app.api.F
     if isLinked:
       rep = app.webLink(n, text=rep, _asString=True)
@@ -207,18 +214,18 @@ class TfApp(Atf):
 
     if bigType:
       children = ()
-    elif nType == 'document':
-      children = L.d(n, otype='face')
-    elif nType == 'face':
-      children = L.d(n, otype='line')
-    elif nType == 'line':
-      children = L.d(n, otype='word')
-    elif nType == 'word':
-      children = L.d(n, otype='sign')
-    elif nType == 'cluster':
-      children = L.d(n, otype='sign')
+    elif nType == DOCUMENT:
+      children = L.d(n, otype=FACE)
+    elif nType == FACE:
+      children = L.d(n, otype=LINE)
+    elif nType == LINE:
+      children = L.d(n, otype=WORD)
+    elif nType == WORD:
+      children = L.d(n, otype=SIGN)
+    elif nType == CLUSTER:
+      children = L.d(n, otype=SIGN)
 
-    if nType == 'document':
+    if nType == DOCUMENT:
       heading = htmlEsc(F.pnumber.v(n))
       heading += ' '
       heading += getFeatures(
@@ -228,7 +235,7 @@ class TfApp(Atf):
           plain=True,
           **options,
       )
-    elif nType == 'face':
+    elif nType == FACE:
       heading = htmlEsc(F.face.v(n))
       featurePart = getFeatures(
           app,
@@ -236,9 +243,9 @@ class TfApp(Atf):
           ('object',),
           **options,
       )
-    elif nType == 'line':
+    elif nType == LINE:
       heading = htmlEsc(F.lnno.v(n))
-      className = 'line'
+      className = LINE
       theseFeats = ('comment', 'remarks', 'translation@en')
       if d.lineNumbers:
         theseFeats = ('srcLnNum',) + theseFeats
@@ -248,7 +255,7 @@ class TfApp(Atf):
           theseFeats,
           **options,
       )
-    elif nType == 'cluster':
+    elif nType == CLUSTER:
       heading = F.type.v(n)
       featurePart = getFeatures(
           app,
@@ -256,7 +263,7 @@ class TfApp(Atf):
           (),
           **options,
       )
-    elif nType == 'word':
+    elif nType == WORD:
       heading = T.text(n, fmt=d.fmt, descend=True)
       featurePart = getFeatures(
           app,

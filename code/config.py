@@ -31,7 +31,7 @@ MODULE_SPECS = ()
 
 ZIP = [REPO]
 
-CONDENSE_TYPE = 'document'
+CONDENSE_TYPE = 'face'
 
 NONE_VALUES = {None}
 
@@ -60,8 +60,8 @@ FONT_NAME = None
 FONT = None
 FONTW = None
 
-BROWSE_NAV_LEVEL = 1
-BROWSE_CONTENT_PRETTY = True
+BROWSE_NAV_LEVEL = 2
+BROWSE_CONTENT_PRETTY = False
 
 
 def deliver():
