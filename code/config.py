@@ -60,6 +60,10 @@ FONT_NAME = None
 FONT = None
 FONTW = None
 
+TEXT_FORMATS = {
+    'layout-orig-full': 'layout',
+}
+
 BROWSE_NAV_LEVEL = 2
 BROWSE_CONTENT_PRETTY = False
 

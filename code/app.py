@@ -60,6 +60,16 @@ URL_FORMAT = (
 SECTION = {DOCUMENT, FACE, LINE}
 
 
+def nice(text):
+  return (
+      text
+      .replace('s,', 'ş')
+      .replace('S,', 'Ş')
+      .replace('t,', 'ţ')
+      .replace('T,', 'Ţ')
+  )
+
+
 class TfApp(Atf):
 
   def __init__(app, *args, _asApp=False, lgc=False, check=False, silent=False, **kwargs):
@@ -99,6 +109,19 @@ class TfApp(Atf):
     if _asString:
       return result
     dh(result)
+
+  def fmt_layout(app, n):
+    api = app.api
+    F = api.F
+    typ = F.type.v(n)
+    after = F.after.v(n) or ''
+    if typ == 'reading':
+      material = nice(F.reading.v(n))
+    elif typ == 'grapheme':
+      material = f'<b>{nice(F.grapheme.v(n))}</b>'
+    else:
+      material = nice(F.sym.v(n))
+    return f'{material}{after}'
 
   def _plain(
       app,
@@ -201,6 +224,7 @@ class TfApp(Atf):
     L = api.L
     T = api.T
     otypeRank = api.otypeRank
+    isHtml = options.get('fmt', None) in app.textFormats
 
     bigType = False
     if d.condenseType is not None and otypeRank[nType] > otypeRank[d.condenseType]:
@@ -264,7 +288,8 @@ class TfApp(Atf):
           **options,
       )
     elif nType == WORD:
-      heading = T.text(n, fmt=d.fmt, descend=True)
+      text = T.text(n, fmt=d.fmt, descend=True)
+      heading = text if isHtml else htmlEsc(text)
       featurePart = getFeatures(
           app,
           n,
@@ -272,7 +297,8 @@ class TfApp(Atf):
           **options,
       )
     elif nType == slotType:
-      heading = T.text(n, fmt=d.fmt)
+      text = T.text(n, fmt=d.fmt)
+      heading = text if isHtml else htmlEsc(text)
       featurePart = getFeatures(
           app,
           n,
