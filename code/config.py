@@ -14,8 +14,8 @@ OPTIONS = (
 ORG = 'Nino-cunei'
 REPO = 'oldbabylonian'
 CORPUS = 'Old Babylonian Letters 1900-1600: Cuneiform tablets '
-VERSION = '0.4'
-RELATIVE = f'tf'
+VERSION = '1.0'
+RELATIVE = 'tf'
 
 DOI_TEXT = '10.5281/zenodo.2579207'
 DOI_URL = 'https://doi.org/10.5281/zenodo.2579207'
@@ -61,7 +61,8 @@ FONT = None
 FONTW = None
 
 TEXT_FORMATS = {
-    'layout-orig-full': 'layout',
+    'layout-orig-rich': 'layoutRich',
+    'layout-orig-unicode': 'layoutUnicode',
 }
 
 BROWSE_NAV_LEVEL = 2

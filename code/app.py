@@ -1,6 +1,6 @@
 import os
 
-from tf.core.helpers import htmlEsc, mdEsc
+from tf.core.helpers import mdhtmlEsc, htmlEsc, mdEsc
 from tf.applib.helpers import dh
 from tf.applib.display import prettyPre, getFeatures
 from tf.applib.highlight import hlText, hlRep
@@ -22,6 +22,8 @@ ATF_TYPES = set('''
     sign
     cluster
 '''.strip().split())
+
+COMMENTLINE = 'commentline'
 
 COMMENT_FEATURES = '''
   comment
@@ -51,6 +53,8 @@ CLUSTER_FEATURES = '''
     langalt
 '''.strip().split()
 
+MODIFIERS = FLAG_FEATURES + CLUSTER_FEATURES[1:-1]
+
 SIGN_FEATURES = FLAG_FEATURES + CLUSTER_FEATURES + COMMENT_FEATURES + CONTENT_FEATURES
 
 URL_FORMAT = (
@@ -58,16 +62,6 @@ URL_FORMAT = (
 )
 
 SECTION = {DOCUMENT, FACE, LINE}
-
-
-def nice(text):
-  return (
-      text
-      .replace('s,', 'ş')
-      .replace('S,', 'Ş')
-      .replace('t,', 'ţ')
-      .replace('T,', 'Ţ')
-  )
 
 
 class TfApp(Atf):
@@ -110,17 +104,62 @@ class TfApp(Atf):
       return result
     dh(result)
 
-  def fmt_layout(app, n):
+  def fmt_layoutRich(app, n):
+    return app._wrapHtml(n, 'r')
+
+  def fmt_layoutUnicode(app, n):
+    return app._wrapHtml(n, 'u')
+
+  def _wrapHtml(app, n, kind):
     api = app.api
     F = api.F
+    Fs = api.Fs
     typ = F.type.v(n)
-    after = F.after.v(n) or ''
-    if typ == 'reading':
-      material = nice(F.reading.v(n))
+    after = (F.afteru.v(n) if kind == 'u' else F.after.v(n)) or ''
+    if typ == 'empty':
+      material = '<span class="empty">∅</span>'
+    elif typ == 'comment' or typ == 'commentline':
+      material = f'<span class="comment">{F.comment.v(n)}</span>'
+    elif typ == 'unknown':
+      partR = Fs("reading" + kind).v(n) or ''
+      if partR:
+        partR = f'<span class="r">{partR}</span>'
+      partG = Fs("grapheme" + kind).v(n) or ''
+      if partG:
+        partG = f'<span class="g">{partG}</span>'
+      material = f'<span class="uncertain">{partR}{partG}</span>'
+    elif typ == 'ellipsis':
+      material = f'<span class="missing">{Fs("grapheme" + kind).v(n)}</span>'
+    elif typ == 'reading':
+      material = f'<span class="r">{Fs("reading" + kind).v(n)}</span>'
     elif typ == 'grapheme':
-      material = f'<b>{nice(F.grapheme.v(n))}</b>'
+      material = f'<span class="g">{Fs("grapheme" + kind).v(n)}</span>'
+    elif typ == 'numeral':
+      if kind == 'u':
+        material = F.symu.v(n)
+      else:
+        part = f'<span class="r">{Fs("reading" + kind).v(n) or ""}</span>'
+        partG = Fs("grapheme" + kind).v(n) or ''
+        if partG:
+          partG = f'<span class="g">{partG}</span>'
+        part = f'{part}{partG}'
+        material = (
+            f'<span class="quantity">{F.repeat.v(n) or ""}{F.fraction.v(n) or ""}</span>⌈{part}⌉'
+        )
+    elif typ == 'complex':
+      partR = f'<span class="r">{Fs("reading" + kind).v(n) or ""}</span>'
+      partG = f'<span class="g">{Fs("grapheme" + kind).v(n) or ""}</span>'
+      operator = f'<span class="operator">{Fs("operator" + kind).v(n) or ""}</span>'
+      material = f'{partR}{operator}⌈{partG}⌉'
     else:
-      material = nice(F.sym.v(n))
+      material = Fs("sym" + kind).v(n)
+    classes = ' '.join(cf for cf in MODIFIERS if Fs(cf).v(n))
+    if classes:
+      material = f'<span class="{classes}">{material}</span>'
+    if F.det.v(n):
+      material = f'<span class="det">{material}</span>'
+    if F.langalt.v(n):
+      material = f'<span class="langalt">{material}</span>'
     return f'{material}{after}'
 
   def _plain(
@@ -139,6 +178,7 @@ class TfApp(Atf):
     api = app.api
     F = api.F
     L = api.L
+    T = api.T
 
     nType = F.otype.v(n)
     result = passage
@@ -151,12 +191,29 @@ class TfApp(Atf):
     if nType == SIGN:
       rep = hlText(app, [n], d.highlights, fmt=d.fmt)
     elif nType in SECTION:
+      if secLabel and d.withPassage:
+        sep1 = app.sectionSep1
+        sep2 = app.sectionSep2
+        label = (
+            '{}'
+            if nType == DOCUMENT else
+            f'{{}}{sep1}{{}}'
+            if nType == FACE else
+            f'{{}}{sep1}{{}}{sep2}{{}}'
+        )
+        rep = label.format(*T.sectionFromNode(n))
+        rep = mdhtmlEsc(rep)
+        rep = hlRep(app, rep, n, d.highlights)
+        if isLinked:
+          rep = app.webLink(n, text=f'{rep}&nbsp;', _asString=True)
+      else:
+        rep = ''
       if nType == LINE:
-        rep = hlText(app, L.d(n, otype=SIGN), d.highlights, fmt=d.fmt)
+        rep += hlText(app, L.d(n, otype=SIGN), d.highlights, fmt=d.fmt)
       elif nType == FACE:
-        rep = mdEsc(htmlEsc(f'{nType} {F.face.v(n)}')) if secLabel else ''
+        rep += mdhtmlEsc(f'{nType} {F.face.v(n)}') if secLabel else ''
       elif nType == DOCUMENT:
-        rep = mdEsc(htmlEsc(f'{nType} {F.pnumber.v(n)}')) if secLabel else ''
+        rep += mdhtmlEsc(f'{nType} {F.pnumber.v(n)}') if secLabel else ''
       rep = hlRep(app, rep, n, d.highlights)
       isText = False
     else:
@@ -168,7 +225,7 @@ class TfApp(Atf):
         n,
         rep,
         nodeRep,
-        isLinked=isLinked and nType != LINE,
+        isLinked=isLinked and nType not in SECTION,
         lineNumbers=lineNumbersCondition,
     )
     result += rep
@@ -243,7 +300,11 @@ class TfApp(Atf):
     elif nType == FACE:
       children = L.d(n, otype=LINE)
     elif nType == LINE:
-      children = L.d(n, otype=WORD)
+      children = tuple(
+          c
+          for c in L.d(n)
+          if F.otype.v(c) == WORD or F.type.v(c) == COMMENTLINE
+      )
     elif nType == WORD:
       children = L.d(n, otype=SIGN)
     elif nType == CLUSTER:
@@ -270,7 +331,7 @@ class TfApp(Atf):
     elif nType == LINE:
       heading = htmlEsc(F.lnno.v(n))
       className = LINE
-      theseFeats = ('comment', 'remarks', 'translation@en')
+      theseFeats = ('remarks', 'translation@en')
       if d.lineNumbers:
         theseFeats = ('srcLnNum',) + theseFeats
       featurePart = getFeatures(
