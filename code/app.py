@@ -187,11 +187,12 @@ class TfApp(Atf):
     else:
       nodeRep = f' *{n}* ' if d.withNodes else ''
 
-    isText = True
+    rep = ''
+    text = ''
     if nType == SIGN:
-      rep = hlText(app, [n], d.highlights, fmt=d.fmt)
+      text = hlText(app, [n], d.highlights, fmt=d.fmt)
     elif nType == WORD:
-      rep = hlText(app, L.d(n, otype=SIGN), d.highlights, fmt=d.fmt)
+      text = hlText(app, L.d(n, otype=SIGN), d.highlights, fmt=d.fmt)
     elif nType in SECTION:
       if secLabel and d.withPassage:
         sep1 = app.sectionSep1
@@ -210,20 +211,22 @@ class TfApp(Atf):
           rep = app.webLink(n, text=f'{rep}&nbsp;', _asString=True)
       else:
         rep = ''
-      isText = False
       if nType == LINE:
-        isText = True
-        rep += hlText(app, L.d(n, otype=SIGN), d.highlights, fmt=d.fmt)
+        text = hlText(app, L.d(n, otype=SIGN), d.highlights, fmt=d.fmt)
       elif nType == FACE:
         rep += mdhtmlEsc(f'{nType} {F.face.v(n)}') if secLabel else ''
       elif nType == DOCUMENT:
         rep += mdhtmlEsc(f'{nType} {F.pnumber.v(n)}') if secLabel else ''
       rep = hlRep(app, rep, n, d.highlights)
+      if text:
+        text = hlRep(app, text, n, d.highlights)
     else:
       rep = hlText(app, L.d(n, otype=SIGN), d.highlights, fmt=d.fmt)
     lineNumbersCondition = d.lineNumbers
-    tClass = display.formatClass[d.fmt].lower() if isText else app.defaultCls
-    rep = f'<span class="{tClass}">{rep}</span>'
+    if text:
+      tClass = display.formatClass[d.fmt].lower()
+      text = f'<span class="{tClass}">{text}</span>'
+      rep += text
     rep = app._addLink(
         n,
         rep,
