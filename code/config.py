@@ -14,7 +14,7 @@ OPTIONS = (
 ORG = 'Nino-cunei'
 REPO = 'oldbabylonian'
 CORPUS = 'Old Babylonian Letters 1900-1600: Cuneiform tablets '
-VERSION = '1.0'
+VERSION = '1.0.1'
 RELATIVE = 'tf'
 
 DOI_TEXT = '10.5281/zenodo.2579207'
@@ -31,7 +31,7 @@ MODULE_SPECS = ()
 
 ZIP = [REPO]
 
-CONDENSE_TYPE = 'face'
+CONDENSE_TYPE = 'line'
 
 NONE_VALUES = {None}
 
@@ -47,18 +47,21 @@ EXAMPLE_SECTION_TEXT = 'P509373'
 SECTION_SEP1 = ' '
 SECTION_SEP2 = ':'
 
-DEFAULT_CLS = ''
-DEFAULT_CLS_ORIG = ''
+DEFAULT_CLS = 'txtn'
+DEFAULT_CLS_ORIG = 'txtp'
+
 FORMAT_CSS = dict(
-    orig=DEFAULT_CLS_ORIG,
-    trans=DEFAULT_CLS,
+    unicode='txtu',
+    rich='txtr',
+    full='txtp',
+    plain='txtp',
 )
 
 CLASS_NAMES = None
 
-FONT_NAME = None
-FONT = None
-FONTW = None
+FONT_NAME = 'Santakku'
+FONT = 'Santakku.ttf'
+FONTW = 'Santakku.woff'
 
 TEXT_FORMATS = {
     'layout-orig-rich': 'layoutRich',

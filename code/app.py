@@ -187,9 +187,11 @@ class TfApp(Atf):
     else:
       nodeRep = f' *{n}* ' if d.withNodes else ''
 
-    isText = d.fmt is None or '-orig-' in d.fmt
+    isText = True
     if nType == SIGN:
       rep = hlText(app, [n], d.highlights, fmt=d.fmt)
+    elif nType == WORD:
+      rep = hlText(app, L.d(n, otype=SIGN), d.highlights, fmt=d.fmt)
     elif nType in SECTION:
       if secLabel and d.withPassage:
         sep1 = app.sectionSep1
@@ -208,18 +210,19 @@ class TfApp(Atf):
           rep = app.webLink(n, text=f'{rep}&nbsp;', _asString=True)
       else:
         rep = ''
+      isText = False
       if nType == LINE:
+        isText = True
         rep += hlText(app, L.d(n, otype=SIGN), d.highlights, fmt=d.fmt)
       elif nType == FACE:
         rep += mdhtmlEsc(f'{nType} {F.face.v(n)}') if secLabel else ''
       elif nType == DOCUMENT:
         rep += mdhtmlEsc(f'{nType} {F.pnumber.v(n)}') if secLabel else ''
       rep = hlRep(app, rep, n, d.highlights)
-      isText = False
     else:
       rep = hlText(app, L.d(n, otype=SIGN), d.highlights, fmt=d.fmt)
     lineNumbersCondition = d.lineNumbers
-    tClass = display.formatClass[d.fmt].lower() if isText else 'trb'
+    tClass = display.formatClass[d.fmt].lower() if isText else app.defaultCls
     rep = f'<span class="{tClass}">{rep}</span>'
     rep = app._addLink(
         n,
@@ -283,9 +286,11 @@ class TfApp(Atf):
     otypeRank = api.otypeRank
     isHtml = options.get('fmt', None) in app.textFormats
 
-    bigType = False
-    if d.condenseType is not None and otypeRank[nType] > otypeRank[d.condenseType]:
-      bigType = True
+    bigType = (
+        not d.full
+        and
+        d.condenseType is not None and otypeRank[nType] > otypeRank[d.condenseType]
+    )
 
     (hlClass, hlStyle) = hlAtt
 
@@ -309,6 +314,8 @@ class TfApp(Atf):
       children = L.d(n, otype=SIGN)
     elif nType == CLUSTER:
       children = L.d(n, otype=SIGN)
+
+    isText = False
 
     if nType == DOCUMENT:
       heading = htmlEsc(F.pnumber.v(n))
@@ -349,6 +356,7 @@ class TfApp(Atf):
           **options,
       )
     elif nType == WORD:
+      isText = True
       text = T.text(n, fmt=d.fmt, descend=True)
       heading = text if isHtml else htmlEsc(text)
       featurePart = getFeatures(
@@ -358,6 +366,7 @@ class TfApp(Atf):
           **options,
       )
     elif nType == slotType:
+      isText = True
       text = T.text(n, fmt=d.fmt)
       heading = text if isHtml else htmlEsc(text)
       featurePart = getFeatures(
@@ -369,6 +378,9 @@ class TfApp(Atf):
       )
       if not outer and F.type.v(n) == 'empty':
         return
+
+    tClass = display.formatClass[d.fmt].lower() if isText else app.defaultCls
+    heading = f'<span class="{tClass}">{heading}</span>'
 
     if outer:
       typePart = app.webLink(n, text=f'{nType} {heading}', _asString=True)
