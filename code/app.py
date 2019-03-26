@@ -8,7 +8,6 @@ from tf.applib.api import setupApi
 from tf.applib.links import outLink
 from atf import Atf
 
-TEMP_DIR = '_temp'
 REPORT_DIR = 'reports'
 
 DOCUMENT = 'document'
@@ -69,7 +68,6 @@ class TfApp(Atf):
   def __init__(app, *args, _asApp=False, lgc=False, check=False, silent=False, **kwargs):
     setupApi(app, *args, _asApp=_asApp, lgc=lgc, check=check, silent=silent, **kwargs)
 
-    app.tempDir = f'{app.repoLocation}/{TEMP_DIR}'
     app.reportDir = f'{app.repoLocation}/{REPORT_DIR}'
 
     if not _asApp:
