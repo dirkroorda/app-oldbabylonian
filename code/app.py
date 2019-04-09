@@ -65,10 +65,11 @@ SECTION = {DOCUMENT, FACE, LINE}
 
 class TfApp(Atf):
 
-  def __init__(app, *args, _asApp=False, lgc=False, check=False, silent=False, **kwargs):
-    setupApi(app, *args, _asApp=_asApp, lgc=lgc, check=check, silent=silent, **kwargs)
+  def __init__(app, *args, _asApp=False, silent=False, **kwargs):
+    setupApi(app, *args, _asApp=_asApp, silent=silent, **kwargs)
 
-    app.reportDir = f'{app.repoLocation}/{REPORT_DIR}'
+    if app.api:
+      app.reportDir = f'{app.repoLocation}/{REPORT_DIR}'
 
     if not _asApp:
       for cdir in (app.tempDir, app.reportDir):
