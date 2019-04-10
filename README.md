@@ -2,6 +2,8 @@
 
 # Old Babylonian Letters
 
+[![DOI](https://zenodo.org/badge/172951151.svg)](https://zenodo.org/badge/latestdoi/172951151)
+
 This is a
 [Text-Fabric](https://githubv.com/annotation/text-fabric) app
 for working with
