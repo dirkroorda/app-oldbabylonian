@@ -2,6 +2,8 @@
 
 # Old Babylonian Letters
 
+[![sha](sha.png) Software Heritage Archive](https://archive.softwareheritage.org/browse/origin/https://github.com/annotation/app-oldbabylonian/)
+
 [![DOI](https://zenodo.org/badge/172951151.svg)](https://zenodo.org/badge/latestdoi/172951151)
 
 This is a
