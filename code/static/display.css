@@ -98,7 +98,7 @@
 .children.cluster {
     flex-flow: row wrap;
 }
-.children.line {
+.children.word {
     align-items: stretch;
     flex-flow: row nowrap;
 }

@@ -4,9 +4,9 @@ from tf.core.helpers import mdhtmlEsc, htmlEsc, mdEsc
 from tf.applib.helpers import dh
 from tf.applib.display import prettyPre, getFeatures
 from tf.applib.highlight import hlText, hlRep
+from tf.applib.app import loadModule
 from tf.applib.api import setupApi
 from tf.applib.links import outLink
-from atf import Atf
 
 REPORT_DIR = 'reports'
 
@@ -63,9 +63,11 @@ URL_FORMAT = (
 SECTION = {DOCUMENT, FACE, LINE}
 
 
-class TfApp(Atf):
+class TfApp(object):
 
   def __init__(app, *args, _asApp=False, silent=False, **kwargs):
+    atf = loadModule(*args[0:2], 'atf')
+    atf.atfApi(app)
     setupApi(app, *args, _asApp=_asApp, silent=silent, **kwargs)
 
     if app.api:
