@@ -1,37 +1,33 @@
 from os.path import dirname, abspath
 
-PROTOCOL = 'http://'
-HOST = 'localhost'
-PORT = dict(
-    kernel=18986,
-    web=8106,
-)
+API_VERSION = 1
 
-OPTIONS = (
-    ('lineNumbers', False, 'checkbox', 'linen', 'show line numbers'),
-)
+PROTOCOL = "http://"
+HOST = "localhost"
+PORT = dict(kernel=18986, web=8106)
 
-ORG = 'Nino-cunei'
-REPO = 'oldbabylonian'
-CORPUS = 'Old Babylonian Letters 1900-1600: Cuneiform tablets '
-VERSION = '1.0.4'
-RELATIVE = 'tf'
+ORG = "Nino-cunei"
+REPO = "oldbabylonian"
+CORPUS = "Old Babylonian Letters 1900-1600: Cuneiform tablets "
+VERSION = "1.0.4"
+RELATIVE = "tf"
 
-DOI_TEXT = '10.5281/zenodo.2579207'
-DOI_URL = 'https://doi.org/10.5281/zenodo.2579207'
+DOI_TEXT = "10.5281/zenodo.2579207"
+DOI_URL = "https://doi.org/10.5281/zenodo.2579207"
 
-DOC_URL = f'https://github.com/{ORG}/{REPO}/blob/master/docs/'
-DOC_INTRO = 'about.md'
-CHAR_URL = f'https://github.com/{ORG}/{REPO}/blob/master/docs/transcription.md'
-CHAR_TEXT = 'How TF features represent ATF'
+DOC_URL = f"https://github.com/{ORG}/{REPO}/blob/master/docs/"
+DOC_INTRO = "about.md"
+CHAR_URL = f"https://github.com/{ORG}/{REPO}/blob/master/docs/transcription.md"
+CHAR_TEXT = "How TF features represent ATF"
 
-FEATURE_URL = f'{DOC_URL}/transcription.md'
+FEATURE_URL = f"{DOC_URL}/transcription.md"
 
 MODULE_SPECS = ()
 
 ZIP = [REPO]
 
-CONDENSE_TYPE = 'line'
+BASE_TYPE = "word"
+CONDENSE_TYPE = "line"
 
 NONE_VALUES = {None}
 
@@ -39,38 +35,85 @@ STANDARD_FEATURES = None  # meaning all loadable features
 
 EXCLUDED_FEATURES = set()
 
-NO_DESCEND_TYPES = {'lex'}
+NO_DESCEND_TYPES = {"lex"}
 
-EXAMPLE_SECTION = '<code>P509373</code>'
-EXAMPLE_SECTION_TEXT = 'P509373'
+EXAMPLE_SECTION = "<code>P509373</code>"
+EXAMPLE_SECTION_TEXT = "P509373"
 
-SECTION_SEP1 = ' '
-SECTION_SEP2 = ':'
+SECTION_SEP1 = " "
+SECTION_SEP2 = ":"
 
-DEFAULT_CLS = 'txtn'
-DEFAULT_CLS_ORIG = 'txtp'
+WRITING = "cun"
+WRITING_DIR = "ltr"
 
-FORMAT_CSS = dict(
-    unicode='txtu',
-    rich='txtr',
-    full='txtp',
-    plain='txtp',
-)
-
-CLASS_NAMES = None
-
-FONT_NAME = 'Santakku'
-FONT = 'Santakku.ttf'
-FONTW = 'Santakku.woff'
+FONT_NAME = "Santakku"
+FONT = "Santakku.ttf"
+FONTW = "Santakku.woff"
 
 TEXT_FORMATS = {
-    'layout-orig-rich': 'layoutRich',
-    'layout-orig-unicode': 'layoutUnicode',
+    "layout-orig-rich": "layoutRich",
+    "layout-orig-unicode": "layoutUnicode",
 }
 
 BROWSE_NAV_LEVEL = 2
 BROWSE_CONTENT_PRETTY = False
 
+VERSES = None
+
+LEX = None
+
+TRANSFORM = None
+
+CHILD_TYPE = dict(
+    document="face",
+    face="line",
+    line={"word", "commentline"},
+    word="sign",
+    quad="sign",
+    cluster="sign",
+)
+
+SUPER_TYPE = None
+
+PLAIN_TYPES = None
+
+PRETTY_TYPES = dict(
+    document=("{pnumber}", "collection volume document docnote", ""),
+    face=("{face}", "object", "", False),
+    line=("{lnno}", "", "remarks translation@en"),
+    cluster=("{type}", "", ""),
+    word=(True, "", ""),
+    sign=(
+        True,
+        "",
+        (
+            "collated remarkable question damage"
+            " det uncertain missing excised supplied langalt"
+            " comment remarks"
+            " repeat fraction operator grapheme"
+        ),
+    ),
+)
+
+LEVELS = dict(
+    document=dict(level=3, flow="col", wrap=False, stretch=False),
+    face=dict(level=3, flow="col", wrap=False, strectch=False),
+    line=dict(level=2, flow="row", wrap=True, strectch=True),
+    cluster=dict(level=2, flow="row", wrap=True, strectch=False),
+    word=dict(level=1, flow="row", wrap=False, strectch=True),
+    sign=dict(level=0, flow="col", wrap=False, strectch=False),
+)
+
+INTERFACE_DEFAULTS = dict(
+    withTypes=True,
+    withNodes=False,
+    showFeatures=True,
+    lineNumbers=False,
+    graphics=None,
+)
+
+LINE_NUMBERS = dict(line="srcLnNum", face="srcLnNum", document="srcLnNum")
+
 
 def deliver():
-  return (globals(), dirname(abspath(__file__)))
+    return (globals(), dirname(abspath(__file__)))
