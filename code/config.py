@@ -58,7 +58,7 @@ TEXT_FORMATS = {
 BROWSE_NAV_LEVEL = 2
 BROWSE_CONTENT_PRETTY = False
 
-VERSES = None
+VERSE_TYPES = None
 
 LEX = None
 
@@ -104,13 +104,7 @@ LEVELS = dict(
     sign=dict(level=0, flow="col", wrap=False, strectch=False),
 )
 
-INTERFACE_DEFAULTS = dict(
-    withTypes=True,
-    withNodes=False,
-    showFeatures=True,
-    lineNumbers=False,
-    graphics=None,
-)
+INTERFACE_DEFAULTS = dict()
 
 LINE_NUMBERS = dict(line="srcLnNum", face="srcLnNum", document="srcLnNum")
 
