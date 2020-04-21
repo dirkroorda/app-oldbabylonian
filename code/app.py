@@ -35,13 +35,13 @@ Hint:
 
 
 class TfApp(object):
-    def __init__(app, *args, _asApp=False, silent=False, **kwargs):
+    def __init__(app, *args, **kwargs):
         atf = loadModule(*args[0:2], "atf")
         atf.atfApi(app)
-        setupApi(app, *args, _asApp=_asApp, silent=silent, **kwargs)
-        notice(args[0])
+        setupApi(app, *args, **kwargs)
+        notice(app)
 
-    def webLink(app, n, text=None, className=None, _asString=False, _noUrl=False):
+    def webLink(app, n, text=None, clsName=None, _asString=False, _noUrl=False):
         api = app.api
         T = api.T
 
@@ -61,7 +61,7 @@ class TfApp(object):
             text,
             href,
             title=title,
-            className=className,
+            clsName=clsName,
             target=target,
             passage=passageText,
         )
@@ -118,9 +118,9 @@ class TfApp(object):
             material = f"{partR}{operator}⌈{partG}⌉"
         else:
             material = Fs("sym" + kind).v(n)
-        classes = " ".join(cf for cf in MODIFIERS if Fs(cf).v(n))
-        if classes:
-            material = f'<span class="{classes}">{material}</span>'
+        clses = " ".join(cf for cf in MODIFIERS if Fs(cf).v(n))
+        if clses:
+            material = f'<span class="{clses}">{material}</span>'
         if F.det.v(n):
             material = f'<span class="det">{material}</span>'
         if F.langalt.v(n):

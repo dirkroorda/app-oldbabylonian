@@ -75,33 +75,48 @@ CHILD_TYPE = dict(
 
 SUPER_TYPE = None
 
-PLAIN_TYPES = None
-
-PRETTY_TYPES = dict(
-    document=("{pnumber}", "collection volume document docnote", ""),
-    face=("{face}", "object", "", False),
-    line=("{lnno}", "", "remarks translation@en"),
-    cluster=("{type}", "", ""),
-    word=(True, "", ""),
-    sign=(
-        True,
-        "",
-        (
+TYPE_DISPLAY = dict(
+    document=dict(
+        template="{pnumber}",
+        bareFeatures="collection volume document docnote",
+        features="",
+        level=3, flow="col", wrap=False, stretch=False,
+    ),
+    face=dict(
+        template="{face}",
+        bareFeatures="object",
+        features="",
+        level=3, flow="col", wrap=False, strectch=False,
+    ),
+    line=dict(
+        template="{lnno}",
+        bareFeatures="",
+        features="remarks translation@en",
+        level=2, flow="row", wrap=True, strectch=True,
+    ),
+    cluster=dict(
+        template="{type}",
+        bareFeatures="",
+        features="",
+        level=2, flow="row", wrap=True, strectch=False,
+    ),
+    word=dict(
+        template=True,
+        bareFeatures="",
+        features="",
+        level=1, flow="row", wrap=False, strectch=True,
+    ),
+    sign=dict(
+        template=True,
+        bareFeatures="",
+        features=(
             "collated remarkable question damage"
             " det uncertain missing excised supplied langalt"
             " comment remarks"
             " repeat fraction operator grapheme"
         ),
+        level=0, flow="col", wrap=False, strectch=False,
     ),
-)
-
-LEVELS = dict(
-    document=dict(level=3, flow="col", wrap=False, stretch=False),
-    face=dict(level=3, flow="col", wrap=False, strectch=False),
-    line=dict(level=2, flow="row", wrap=True, strectch=True),
-    cluster=dict(level=2, flow="row", wrap=True, strectch=False),
-    word=dict(level=1, flow="row", wrap=False, strectch=True),
-    sign=dict(level=0, flow="col", wrap=False, strectch=False),
 )
 
 INTERFACE_DEFAULTS = dict()
