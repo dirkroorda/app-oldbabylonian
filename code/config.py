@@ -26,89 +26,62 @@ MODULE_SPECS = ()
 
 ZIP = [REPO]
 
-BASE_TYPE = "word"
-CONDENSE_TYPE = "line"
-
-NONE_VALUES = {None}
-
-STANDARD_FEATURES = None  # meaning all loadable features
-
-EXCLUDED_FEATURES = set()
-
-NO_DESCEND_TYPES = {"lex"}
-
 EXAMPLE_SECTION = "<code>P509373</code>"
 EXAMPLE_SECTION_TEXT = "P509373"
 
-SECTION_SEP1 = " "
-SECTION_SEP2 = ":"
-
-WRITING = "cun"
-WRITING_DIR = "ltr"
-
-FONT_NAME = "Santakku"
-FONT = "Santakku.ttf"
-FONTW = "Santakku.woff"
-
-TEXT_FORMATS = {
-    "layout-orig-rich": "layoutRich",
-    "layout-orig-unicode": "layoutUnicode",
-}
-
-BROWSE_NAV_LEVEL = 2
-BROWSE_CONTENT_PRETTY = False
-
-VERSE_TYPES = None
-
-LEX = None
-
-TRANSFORM = None
-
-CHILD_TYPE = dict(
-    document="face",
-    face="line",
-    line={"word", "commentline"},
-    word="sign",
-    quad="sign",
-    cluster="sign",
+DATA_DISPLAY = dict(
+    noneValues={None},
+    sectionSep1=" ",
+    sectionSep2=":",
+    writing="cun",
+    writingDir="ltr",
+    fontName="Santakku",
+    font="Santakk.ttf",
+    fontw="Santakku.woff",
+    textFormats={
+        "layout-orig-rich": "layoutRich",
+        "layout-orig-unicode": "layoutUnicode",
+    },
+    browseNavLevel=2,
+    browseContentPretty=False,
 )
-
-SUPER_TYPE = None
 
 TYPE_DISPLAY = dict(
     document=dict(
         template="{pnumber}",
-        bareFeatures="collection volume document docnote",
-        features="",
+        featuresBare="collection volume document docnote",
+        children="face",
+        lineNumber="srcLnNum",
         level=3, flow="col", wrap=False, stretch=False,
     ),
     face=dict(
         template="{face}",
-        bareFeatures="object",
-        features="",
+        featuresBare="object",
+        children="line",
+        lineNumber="srcLnNum",
         level=3, flow="col", wrap=False, strectch=False,
     ),
     line=dict(
         template="{lnno}",
-        bareFeatures="",
         features="remarks translation@en",
+        children={"word", "commentline"},
+        condense=True,
+        lineNumber="srcLnNum",
         level=2, flow="row", wrap=True, strectch=True,
     ),
     cluster=dict(
         template="{type}",
-        bareFeatures="",
-        features="",
+        children="sign",
         level=2, flow="row", wrap=True, strectch=False,
     ),
     word=dict(
         template=True,
-        bareFeatures="",
-        features="",
+        children="sign",
+        base=True,
         level=1, flow="row", wrap=False, strectch=True,
     ),
     sign=dict(
         template=True,
-        bareFeatures="",
         features=(
             "collated remarkable question damage"
             " det uncertain missing excised supplied langalt"
@@ -119,9 +92,9 @@ TYPE_DISPLAY = dict(
     ),
 )
 
-INTERFACE_DEFAULTS = dict()
-
-LINE_NUMBERS = dict(line="srcLnNum", face="srcLnNum", document="srcLnNum")
+INTERFACE_DEFAULTS = dict(
+    lineNumbers=False,
+)
 
 
 def deliver():
