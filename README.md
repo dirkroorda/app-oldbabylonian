@@ -7,7 +7,7 @@
 [![DOI](https://zenodo.org/badge/172951151.svg)](https://zenodo.org/badge/latestdoi/172951151)
 
 This is a
-[Text-Fabric](https://githubv.com/annotation/text-fabric) app
+[Text-Fabric](https://github.com/annotation/text-fabric) app
 for working with
 [Old Babylonian](https://github.com/Nino-cunei/oldbabylonian) letters: Cuneiform Tablets from the Old Babylonian (1900-1600 BC) period.
 

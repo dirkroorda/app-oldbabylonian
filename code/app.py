@@ -1,22 +1,5 @@
-from tf.applib.helpers import dh
 from tf.applib.app import loadModule
 from tf.applib.api import setupApi
-from tf.applib.links import outLink
-
-MODIFIERS = """
-    collated
-    remarkable
-    question
-    damage
-    uncertain
-    missing
-    excised
-    supplied
-""".strip().split()
-
-URL_FORMAT = (
-    "https://cdli.ucla.edu/search/search_results.php?SearchMode=Text&ObjectID={}"
-)
 
 
 def notice(app):
@@ -34,40 +17,24 @@ Hint:
         )
 
 
+MODIFIERS = """
+    collated
+    remarkable
+    question
+    damage
+    uncertain
+    missing
+    excised
+    supplied
+""".strip().split()
+
+
 class TfApp(object):
     def __init__(app, *args, **kwargs):
         atf = loadModule(*args[0:2], "atf")
         atf.atfApi(app)
         setupApi(app, *args, **kwargs)
         notice(app)
-
-    def webLink(app, n, text=None, clsName=None, _asString=False, _noUrl=False):
-        api = app.api
-        T = api.T
-
-        (pNum, face, lnno) = T.sectionFromNode(n, fillup=True)
-        passageText = app.sectionStrFromNode(n)
-        href = "#" if _noUrl else URL_FORMAT.format(pNum)
-        if text is None:
-            text = passageText
-            title = f"show this document on CDLI"
-        else:
-            title = passageText
-        if _noUrl:
-            title = None
-        target = "" if _noUrl else None
-
-        result = outLink(
-            text,
-            href,
-            title=title,
-            clsName=clsName,
-            target=target,
-            passage=passageText,
-        )
-        if _asString:
-            return result
-        dh(result)
 
     def fmt_layoutRich(app, n):
         return app._wrapHtml(n, "r")
