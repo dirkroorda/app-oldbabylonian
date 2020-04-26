@@ -11,21 +11,11 @@
     font-size: x-large;
     font-weight: bold;
 }
-.name {
-    font-family: monospace;
-    font-size: medium;
-    color: #0000bb;
-}
 .period {
     font-family: monospace;
     font-size: medium;
     font-weight: bold;
     color: #0000bb;
-}
-.text {
-    font-family: sans-serif;
-    font-size: x-small;
-    color: #000000;
 }
 .comment {
     color: #7777dd;

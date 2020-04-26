@@ -1,0 +1,47 @@
+apiVersion: 1
+dataDisplay:
+  textFormats:
+    layout-orig-rich: layoutRich
+    layout-orig-unicode: layoutUnicode
+  writing: akk
+docs:
+  charText: mapping from readings to UNICODE
+  charUrl: '{docBase}/programs/mapReadings.ipynb'
+  docPage: about
+  featureBase: '{docBase}/transcription{docExt}'
+  featurePage: ''
+  webBase: https://cdli.ucla.edu
+  webHint: Show this document on CDLI
+  webUrl: /search/search_results.php?SearchMode=Text&ObjectID=<1>
+interfaceDefaults:
+  lineNumbers: false
+provenanceSpec:
+  corpus: 'Old Babylonian Letters 1900-1600: Cuneiform tablets '
+  doi: 10.5281/zenodo.2579207
+  org: Nino-cunei
+  repo: oldbabylonian
+  version: 1.0.4
+typeDisplay:
+  cluster:
+    children: sign
+    stretch: false
+    template: '{type}'
+  document:
+    featuresBare: collection volume document docnote
+    lineNumber: srcLnNum
+  face:
+    featuresBare: object
+    lineNumber: srcLnNum
+  line:
+    children:
+    - commentline
+    - word
+    features: remarks translation@en
+    lineNumber: srcLnNum
+  sign:
+    features: collated remarkable question damage det uncertain missing excised supplied
+      langalt comment remarks repeat fraction operator grapheme
+  word:
+    base: true
+    template: true
+    wrap: false

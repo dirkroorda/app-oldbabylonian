@@ -1,5 +1,5 @@
-from tf.applib.app import loadModule
-from tf.applib.api import setupApi
+from tf.applib.find import loadModule
+from tf.applib.app import App
 
 
 def notice(app):
@@ -29,12 +29,11 @@ MODIFIERS = """
 """.strip().split()
 
 
-class TfApp(object):
+class TfApp(App):
     def __init__(app, *args, **kwargs):
         atf = loadModule(*args[0:2], "atf")
         atf.atfApi(app)
-        setupApi(app, *args, **kwargs)
-        notice(app)
+        super().__init__(*args, **kwargs)
 
     def fmt_layoutRich(app, n):
         return app._wrapHtml(n, "r")
