@@ -3,7 +3,6 @@ dataDisplay:
   textFormats:
     layout-orig-rich: layoutRich
     layout-orig-unicode: layoutUnicode
-  writing: akk
 docs:
   charText: mapping from readings to UNICODE
   charUrl: '{docBase}/programs/mapReadings.ipynb'
@@ -45,3 +44,4 @@ typeDisplay:
     base: true
     template: true
     wrap: false
+writing: akk
