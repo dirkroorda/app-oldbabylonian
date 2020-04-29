@@ -24,7 +24,7 @@ typeDisplay:
   cluster:
     children: sign
     stretch: false
-    template: '{type}'
+    label: '{type}'
   document:
     featuresBare: collection volume document docnote
     lineNumber: srcLnNum
@@ -33,7 +33,6 @@ typeDisplay:
     lineNumber: srcLnNum
   line:
     children:
-    - commentline
     - word
     features: remarks translation@en
     lineNumber: srcLnNum
@@ -43,5 +42,6 @@ typeDisplay:
   word:
     base: true
     template: true
+    label: true
     wrap: false
 writing: akk
