@@ -26,7 +26,7 @@ typeDisplay:
     stretch: false
     label: '{type}'
   document:
-    featuresBare: collection volume document docnote
+    featuresBare: collection volume docnumber docnote
     lineNumber: srcLnNum
   face:
     featuresBare: object
@@ -41,7 +41,6 @@ typeDisplay:
       langalt comment remarks repeat fraction operator grapheme
   word:
     base: true
-    template: true
     label: true
     wrap: false
 writing: akk

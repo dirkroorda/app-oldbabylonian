@@ -1,3 +1,4 @@
+import types
 from tf.applib.find import loadModule
 from tf.applib.app import App
 
@@ -14,17 +15,21 @@ MODIFIERS = """
 """.strip().split()
 
 
+def fmt_layoutRich(app, n):
+    return app._wrapHtml(n, "r")
+
+
+def fmt_layoutUnicode(app, n):
+    return app._wrapHtml(n, "u")
+
+
 class TfApp(App):
     def __init__(app, *args, **kwargs):
         atf = loadModule(*args[0:2], "atf")
         atf.atfApi(app)
+        app.fmt_layoutRich = types.MethodType(fmt_layoutRich, app)
+        app.fmt_layoutUnicode = types.MethodType(fmt_layoutUnicode, app)
         super().__init__(*args, **kwargs)
-
-    def fmt_layoutRich(app, n):
-        return app._wrapHtml(n, "r")
-
-    def fmt_layoutUnicode(app, n):
-        return app._wrapHtml(n, "u")
 
     def _wrapHtml(app, n, kind):
         api = app.api
