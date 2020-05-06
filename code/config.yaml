@@ -1,17 +1,16 @@
 apiVersion: 1
 dataDisplay:
   textFormats:
-    layout-orig-rich: layoutRich
-    layout-orig-unicode: layoutUnicode
+    layout-orig-rich:
+      method: layoutRich
+    layout-orig-unicode:
+      method: layoutUnicode
 docs:
   charText: mapping from readings to UNICODE
   charUrl: '{docBase}/programs/mapReadings.ipynb'
   docPage: about
   featureBase: '{docBase}/transcription{docExt}'
   featurePage: ''
-  webBase: https://cdli.ucla.edu
-  webHint: Show this document on CDLI
-  webUrl: /search/search_results.php?SearchMode=Text&ObjectID=<1>
 interfaceDefaults:
   lineNumbers: false
 provenanceSpec:
@@ -20,6 +19,9 @@ provenanceSpec:
   org: Nino-cunei
   repo: oldbabylonian
   version: 1.0.4
+  webBase: https://cdli.ucla.edu
+  webHint: Show this document on CDLI
+  webUrl: /search/search_results.php?SearchMode=Text&ObjectID=<1>
 typeDisplay:
   cluster:
     children: sign

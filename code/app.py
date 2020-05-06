@@ -15,11 +15,11 @@ MODIFIERS = """
 """.strip().split()
 
 
-def fmt_layoutRich(app, n):
+def fmt_layoutRich(app, n, **kwargs):
     return app._wrapHtml(n, "r")
 
 
-def fmt_layoutUnicode(app, n):
+def fmt_layoutUnicode(app, n, **kwargs):
     return app._wrapHtml(n, "u")
 
 
