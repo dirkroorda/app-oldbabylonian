@@ -25,7 +25,7 @@ def fmt_layoutUnicode(app, n, **kwargs):
 
 class TfApp(App):
     def __init__(app, *args, **kwargs):
-        atf = loadModule(*args[0:2], "atf")
+        atf = loadModule("atf", *args)
         atf.atfApi(app)
         app.fmt_layoutRich = types.MethodType(fmt_layoutRich, app)
         app.fmt_layoutUnicode = types.MethodType(fmt_layoutUnicode, app)
