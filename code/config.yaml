@@ -32,7 +32,7 @@ provenanceSpec:
   version: 1.0.5
   webBase: https://cdli.ucla.edu
   webHint: Show this document on CDLI
-  webUrl: /search/search_results.php?SearchMode=Text&ObjectID=<1>
+  webUrl: '{webBase}/search/search_results.php?SearchMode=Text&ObjectID=<1>'
 typeDisplay:
   cluster:
     children:
