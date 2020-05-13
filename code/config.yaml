@@ -36,6 +36,8 @@ provenanceSpec:
 typeDisplay:
   cluster:
     children:
+    - cluster
+    - word
     - sign
     stretch: false
     label: '{type}'
