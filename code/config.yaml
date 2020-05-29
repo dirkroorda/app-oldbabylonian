@@ -1,4 +1,4 @@
-apiVersion: 1
+apiVersion: 2
 dataDisplay:
   showVerseInTuple: true
   textFormats:
@@ -35,10 +35,6 @@ provenanceSpec:
   webUrl: '{webBase}/search/search_results.php?SearchMode=Text&ObjectID=<1>'
 typeDisplay:
   cluster:
-    children:
-    - cluster
-    - word
-    - sign
     stretch: false
     label: '{type}'
   document:
@@ -48,9 +44,6 @@ typeDisplay:
     featuresBare: object
     lineNumber: srcLnNum
   line:
-    children:
-    - cluster
-    - word
     features: remarks translation@en
     lineNumber: srcLnNum
   sign:
@@ -58,9 +51,6 @@ typeDisplay:
       langalt comment remarks repeat fraction operator grapheme
   word:
     base: true
-    children:
-    - cluster
-    - sign
     label: true
     wrap: false
 writing: akk
