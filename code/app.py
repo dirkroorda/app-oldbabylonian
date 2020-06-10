@@ -1,6 +1,6 @@
 import types
-from tf.applib.find import loadModule
-from tf.applib.app import App
+from tf.advanced.find import loadModule
+from tf.advanced.app import App
 
 
 MODIFIERS = """
