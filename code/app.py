@@ -30,8 +30,13 @@ class TfApp(App):
         app.fmt_layoutRich = types.MethodType(fmt_layoutRich, app)
         app.fmt_layoutUnicode = types.MethodType(fmt_layoutUnicode, app)
         super().__init__(*args, **kwargs)
+        api = app.api
+        Fall = api.Fall
+        allNodeFeatures = set(Fall())
+        app.modifiers = [m for m in MODIFIERS if m in allNodeFeatures]
 
     def _wrapHtml(app, n, kind):
+        modifiers = app.modifiers
         api = app.api
         F = api.F
         Fs = api.Fs
@@ -74,7 +79,7 @@ class TfApp(App):
             material = f"{partR}{operator}⌈{partG}⌉"
         else:
             material = Fs("sym" + kind).v(n)
-        clses = " ".join(cf for cf in MODIFIERS if Fs(cf).v(n))
+        clses = " ".join(cf for cf in modifiers if Fs(cf).v(n))
         if clses:
             material = f'<span class="{clses}">{material}</span>'
         if F.det.v(n):

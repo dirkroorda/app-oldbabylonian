@@ -14,15 +14,10 @@ for working with
 Get started with the
 [tutorial](https://nbviewer.jupyter.org/github/annotation/tutorials/blob/master/oldbabylonian/start.ipynb).
 
-It offers this [API](https://annotation.github.io/text-fabric/Api/App/).
-
-This app also contains interfaces to deal with links to
-[CDLI](https://cdli.ucla.edu)
-
 [Additional API](api.md)
 
 See also
 [about](https://github.com/Nino-cunei/oldbabylonian/blob/master/docs/about.md),
-[transcription](https://github.com/Nino-cunei/oldbabylonian/blob/master/docs/transcription.md).
+[transcription](https://github.com/Nino-cunei/tfFromAtf/blob/master/docs/transcription.md).
 
 ![shot](images/shot.png)
