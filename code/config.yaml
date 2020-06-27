@@ -18,7 +18,7 @@ dataDisplay:
       style: orig
 docs:
   charText: mapping from readings to UNICODE
-  charUrl: 'https://github.com/Nino-cunei/oldbabylonian/blob/master/programs/mapReadings.ipynb'
+  charUrl: 'https://nbviewer.jupyter.org/github/Nino-cunei/tfFromAtf/blob/master/programs/mapReadings.ipynb'
   docPage: about
   featureBase: 'https://github.com/Nino-cunei/tfFromAtf/blob/master/docs/transcription{docExt}'
   featurePage: ''
