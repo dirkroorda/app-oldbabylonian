@@ -3,8 +3,8 @@
 # Old Babylonian Letters
 
 [![SWH](https://archive.softwareheritage.org/badge/origin/https://github.com/annotation/app-oldbabylonian/)](https://archive.softwareheritage.org/browse/origin/https://github.com/annotation/app-oldbabylonian/)
-
 [![DOI](https://zenodo.org/badge/172951151.svg)](https://zenodo.org/badge/latestdoi/172951151)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 
 This is a
 [Text-Fabric](https://github.com/annotation/text-fabric) app
@@ -21,3 +21,8 @@ See also
 [transcription](https://github.com/Nino-cunei/tfFromAtf/blob/master/docs/transcription.md).
 
 ![shot](images/shot.png)
+
+# Author
+
+[Dirk Roorda](https://github.com/dirkroorda)
+
